@@ -1,4 +1,3 @@
-
 fetch("https://dummyjson.com/products")
     .then(res => res.json())
     .then(res => {
@@ -43,16 +42,56 @@ fetch("https://dummyjson.com/products")
                     document.getElementById(modalId).classList.add(isVisible);
                 });
             }
-            
+
         });
     })
 
-function filtrar(){
-    var objetos = document.getElementsByClassName("objeto");
-    var arr = [].slice.call(objetos);
-    console.log(arr)
-    arr.forEach(element =>{
-        element.style.visibility = "hidden"
-    })
+
+function filtrar() {
+    var objetos = document.getElementById("lista");
+    objetos.style.display = "none"
     var nombre = document.getElementById("ingreso").value;
+    fetch(`https://dummyjson.com/products/search?q=${nombre}`)
+        .then(res => res.json())
+        .then(res => {
+            var producto = res.products[0]
+            console.log(producto)
+            document.getElementById("lista2").innerHTML = `
+            <ul>
+            <li>
+
+        <div class="content objeto">
+        <h4>${producto.title}</h4>
+        <h4>${producto.price}</h4>
+        <h4>${producto.brand}</h4>
+        <button type="button" class="open-modal" data-open="${producto.id}" data-bs-toggle="modal" data-bs-target="#${producto.id}">mas informacion</button>
+        <div class="modal"  id="${producto.id}"tabindex="-1">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">${producto.title}</h5>
+            </div>
+            <div class="modal-body">
+              <p>Descripcion: ${producto.description}</p>
+              <p>Stock: ${producto.stock}</p>
+              <p>Precio: ${producto.price}</p>
+              <p>Rating: ${producto.rating}</p>
+
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>  
+    </li>
+    </ul>
+
+        `
+        })
 }
+function reiniciar()[
+    
+]
