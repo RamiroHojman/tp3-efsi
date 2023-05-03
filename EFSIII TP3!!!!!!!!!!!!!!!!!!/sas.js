@@ -4,13 +4,13 @@ fetch("https://dummyjson.com/products")
     console.log(res)
     res.products.forEach(element => {
       document.getElementById("lista").innerHTML += `
-            <li>
+            <li id="${element.id}" class="${element.category}">
         <div class="content objeto">
             <h4>${element.title}</h4>
             <h4>${element.price}</h4>
             <h4>${element.brand}</h4>
-            <button type="button" class="open-modal" data-open="${element.id}" data-bs-toggle="modal" data-bs-target="#${element.id}">mas informacion</button>
-            <div class="modal"  id="${element.id}"tabindex="-1">
+            <button type="button" class="open-modal" data-open="${element.id + 1}" data-bs-toggle="modal" data-bs-target="#${element.id + 1}">mas informacion</button>
+            <div class="modal" id="${element.id + 1}" tabindex="-1">
             <div class="modal-dialog">
               <div class="modal-content">
                 <div class="modal-header">
@@ -48,77 +48,41 @@ fetch("https://dummyjson.com/products")
 
 
 function buscar() {
-  var objetos = document.getElementById("lista");
-  objetos.style.display = "none"
-  var busqueda = document.getElementById("lista2")
-  busqueda.attributeStyleMap.delete('display')
-  var nombre = document.getElementById("ingreso").value;
-//si no encuentra tiene que poner "no se encontro!!!"
-//busca por id los productos en la lista  y si no es pone en display none y sino lo muestra!!!!!!! 
+  var nombre = document.getElementById("ingreso").value
   fetch(`https://dummyjson.com/products/search?q=${nombre}`)
     .then(res => res.json())
     .then(res => {
-      var producto = res.products[0]
-      console.log(producto)
+      try {
+        var producto = res.products[0]
+        var elementos = Array.from(document.getElementsByTagName("li"));;
+        for (let index = 0; index < 30; index++) {
+          if (elementos[index].id != producto.id) {
+            elementos[index].style.display = "none"
+
+          }
+        }
+
+      } catch (error) {
+        alert("No se encontro el elemento")
+      }
     })
 }
 function reiniciar() {
-  var objetos = document.getElementById("lista")
-  objetos.attributeStyleMap.delete('display')
-  var busqueda = document.getElementById("lista2")
-  busqueda.style.display = "none"
+  var objetos = Array.from(document.getElementsByTagName("li"))
+  objetos.forEach(element => {
+    element.attributeStyleMap.delete('display')
+  })
 }
 
 function filtro(nombre) {
-  var objetos = document.getElementById("lista");
-  objetos.style.display = "none"
-  var busqueda = document.getElementById("lista2")
-  busqueda.style.display = "none"         
-  fetch("https://dummyjson.com/products/category/" + nombre)
-    .then(res => res.json())
-    .then(res => {
-      console.log(res)
-      res.products.forEach(element => {
-        document.getElementById("lista3").innerHTML += `
-            <li>
-        <div class="content objeto">
-            <h4>${element.title}</h4>
-            <h4>${element.price}</h4>
-            <h4>${element.brand}</h4>
-            <button type="button" class="open-modal" data-open="${element.id}" data-bs-toggle="modal" data-bs-target="#${element.id}">mas informacion</button>
-            <div class="modal"  id="${element.id}"tabindex="-1">
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">${element.title}</h5>
-                </div>
-                <div class="modal-body">
-                  <p>Descripcion: ${element.description}</p>
-                  <p>Stock: ${element.stock}</p>
-                  <p>Precio: ${element.price}</p>
-                  <p>Rating: ${element.rating}</p>
 
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-        </div>
-        
-             </li>
-            `
-        const openEls = document.querySelectorAll("[data-open]");
-        const isVisible = "is-visible";
-        for (const el of openEls) {
-          el.addEventListener("click", function () {
-            const modalId = this.dataset.open;
-            document.getElementById(modalId).classList.add(isVisible);
-          });
-        }
+  var elementos = Array.from(document.getElementsByTagName("li"));;
+  for (let index = 0; index < 30; index++) {
+    if (!elementos[index].classList.contains(nombre)) {
+      elementos[index].style.display = "none"
 
-      });
-    })
-}    
+    }
+  }
+
+}
+
